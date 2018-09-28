@@ -135,6 +135,7 @@ class GetArticleData(object):
         # 检查数据是否最新
         # if self.check_is_save(periods=periods, source=source):
         #     print("已经是最新的一期了")
+
         #     return False
         return periods
 
