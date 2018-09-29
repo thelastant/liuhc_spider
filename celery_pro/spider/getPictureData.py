@@ -38,14 +38,14 @@ class GetPictureData(object):
 
     def get_response(self, url, response_type=1):
         if response_type == 1:
-            response = requests.get(url=url)
+            response = requests.get(url=url, timeout=15)
             response = response.text.encode(response.encoding).decode("utf-8")
             html = etree.HTML(response)
         elif response_type == 2:
-            response = requests.get(url=url)
+            response = requests.get(url=url, timeout=15)
             html = response.content
         else:
-            response = requests.get(url=url)
+            response = requests.get(url=url, timeout=15)
             response = response.text
             html = etree.HTML(response)
         return html
@@ -175,7 +175,7 @@ class GetPictureData(object):
         #     return False
         return periods
 
-    def run_picture_1(self):
+    def run_picture_1(self, save_method=1):
         """  第一个网站  """
 
         total_picture = 56
@@ -220,10 +220,10 @@ class GetPictureData(object):
                 continue
 
             # 检查数据库是否已经保存图片
-            is_save = self.check_is_save(periods=periods, source=url, img_src=img_src)
-            if is_save:
-                print("=================img has been save", periods, img_title, img_src)
-                continue
+            # is_save = self.check_is_save(periods=periods, source=url, img_src=img_src)
+            # if is_save:
+            #     print("=================img has been save", periods, img_title, img_src)
+            #     continue
 
             # # 存入七牛，返回字典
             # data = self.save_in_qiniu(type_num=type_num, img_content=img_content, img_title=img_title,
@@ -234,7 +234,12 @@ class GetPictureData(object):
             data["source_url"] = url
             data["img_src"] = img_src
             data["img_title"] = img_title
-            self.save_to_db(**data)
+            if save_method == 1:
+                self.save_to_db(**data)
+            elif save_method == 2:
+                self.update_picture(**data)
+            else:
+                raise ("请输入正确的存储方式")
 
             # # 下载失败后在队列中取出来，重新请求下载
             # while not self.q.empty():
@@ -268,7 +273,7 @@ class GetPictureData(object):
             # 图片存入数据库
             self.save_to_db(**data)
 
-    def run_picture_3(self):
+    def run_picture_3(self,save_method=1):
         """  第一个网站公式图片  """
         data = {}
         periods = self.check_new_periods(source_type=1)
@@ -299,10 +304,10 @@ class GetPictureData(object):
             # img_content = self.get_response(url=img_src, response_type=2)  # 请求src返回体，图片数据，存入七牛，暂时废弃
 
             # 检查图片是否已经存入数据库
-            is_save = self.check_is_save(periods=periods, source=img_url, img_src=img_src)
-            if is_save:
-                print("img has been save,don't save again===>", periods, img_title, img_src)
-                continue
+            # is_save = self.check_is_save(periods=periods, source=img_url, img_src=img_src)
+            # if is_save:
+            #     print("img has been save,don't save again===>", periods, img_title, img_src)
+            #     continue
             # 图片存入七牛云
             # data = self.save_in_qiniu(type_num=type_num, img_content=img_content, img_title=img_title, img_src=img_src,
             #                           periods=periods, url=img_url)
@@ -311,7 +316,12 @@ class GetPictureData(object):
             data["source_url"] = img_url
             data["img_src"] = img_src
             data["img_title"] = img_title
-            self.save_to_db(**data)
+            if save_method == 1:
+                self.save_to_db(**data)
+            elif save_method == 2:
+                self.update_picture(**data)
+            else:
+                raise ("请输入正确的存储方式")
 
     def run_one_picture(self, url, type_num, xpath_pattern_1):
         data = {}
@@ -341,6 +351,11 @@ class GetPictureData(object):
         return True
 
     def run(self):
+
+        # 第一次开启的时候，数据库没数据时候，先启动这两个，然后注释掉这个，后续都不需要了
+        # self.run_picture_1()
+        # self.run_picture_3()
+
         # 908181网站分类图片
         for i in range(1, 81):
             # 根据不一样的内容先确定不同的爬取规则
@@ -362,8 +377,8 @@ class GetPictureData(object):
                                               xpath_pattern_1=xpath_pattern_img)
                 if not result:
                     print("图片更新失败,将会重新爬取整个网站！")
-                    self.run_picture_1()
-                    self.run_picture_3()
+                    self.run_picture_1(save_method=2)
+                    self.run_picture_3(save_method=2)
                     print("所有数据更新成功！")
                     break
         print("所有图片检查完成")
