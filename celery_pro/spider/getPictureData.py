@@ -111,7 +111,7 @@ class GetPictureData(object):
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
 
         cur = db.cursor()
-        sql_insert = "UPDATE picture SET (create_time,img_src)  values(%s,%s) WHERE source=%s AND type=%s"
+        sql_insert = "UPDATE picture SET create_time=%s,img_src=%s WHERE source=%s AND type=%s"
         # sql_insert = "UPDATE USER SET PASSWORD='"+pwd+"' WHERE NAME='"+name+"'"
 
         try:
@@ -357,6 +357,7 @@ class GetPictureData(object):
                 print("图片%d正常显示" % i)
                 continue
             else:
+                print("%d图片显示异常，重新更新此图片" % i)
                 result = self.run_one_picture(url=img_src_cai_tu_source[i], type_num=i,
                                               xpath_pattern_1=xpath_pattern_img)
                 if not result:
@@ -365,6 +366,7 @@ class GetPictureData(object):
                     self.run_picture_3()
                     print("所有数据更新成功！")
                     break
+        print("所有图片检查完成")
 
 
 # # 测试！！！！！！！！！！
