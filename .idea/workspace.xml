@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d11f5181-d32f-4e4c-ad26-b659338bc6aa" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/celery_pro/.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/celery_pro/utils/common.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/celery_pro/spider/getPictureData.py" afterPath="$PROJECT_DIR$/celery_pro/spider/getPictureData.py" />
-    </list>
+    <list default="true" id="d11f5181-d32f-4e4c-ad26-b659338bc6aa" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,8 +65,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="195" />
-    <option name="y" value="36" />
+    <option name="x" value="-179" />
+    <option name="y" value="79" />
     <option name="width" value="1386" />
     <option name="height" value="788" />
   </component>
@@ -328,7 +324,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="195" y="36" width="1386" height="788" extended-state="0" />
+    <frame x="-179" y="79" width="1386" height="788" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24434389" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
