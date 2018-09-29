@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="d11f5181-d32f-4e4c-ad26-b659338bc6aa" name="Default" comment="" />
+=======
+<<<<<<< HEAD
+    <list default="true" id="bc656fe8-4c84-4741-bbb1-48ed6e2829e4" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/spider.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spider.iml" afterDir="false" />
+=======
+    <list default="true" id="d11f5181-d32f-4e4c-ad26-b659338bc6aa" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/celery_pro/.gitignore" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/celery_pro/utils/common.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/celery_pro/spider/getPictureData.py" afterPath="$PROJECT_DIR$/celery_pro/spider/getPictureData.py" />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
+    </list>
+>>>>>>> 7ece4ea891efcb2414975d2f7066bc24fba81bd6
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -9,6 +22,16 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="getPictureData.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/celery_pro/spider/getPictureData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+=======
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
@@ -31,17 +54,29 @@
                 <element signature="e#0#15#0" expanded="true" />
                 <marker date="1538153269328" expanded="true" signature="2708:2775" ph="SELECT * FRO... picture" />
                 <marker date="1538153269328" expanded="true" signature="3728:3846" ph="insert into picture... " />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file leaf-file-name="getArticleData.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/celery_pro/spider/getArticleData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="137" selection-start-line="137" selection-end-line="137" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
+=======
       <file leaf-file-name="common.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/celery_pro/utils/common.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
             </state>
           </provider>
         </entry>
@@ -54,7 +89,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/celery_pro/spider/getArticleData.py" />
+=======
         <option value="$PROJECT_DIR$/celery_pro/spider/getPictureData.py" />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
       </list>
     </option>
   </component>
@@ -64,6 +103,16 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
+<<<<<<< HEAD
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="334" />
+    <option name="y" value="104" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+=======
   <component name="ProjectFrameBounds">
     <option name="x" value="-179" />
     <option name="y" value="79" />
@@ -142,11 +191,44 @@
       <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="spider" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spider" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spider" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spider" type="462c0819:PsiDirectoryNode" />
+              <item name="celery_pro" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spider" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spider" type="462c0819:PsiDirectoryNode" />
+              <item name="celery_pro" type="462c0819:PsiDirectoryNode" />
+              <item name="spider" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
+<<<<<<< HEAD
+=======
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\wwyang\Desktop\myproject\spider\celery_pro\utils" />
@@ -154,6 +236,7 @@
       <recent name="C:\Users\wwyang\Desktop\myproject\spider\celery_pro" />
     </key>
   </component>
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -166,6 +249,18 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bc656fe8-4c84-4741-bbb1-48ed6e2829e4" name="Default" comment="" />
+      <created>1538125452404</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1538125452404</updated>
+=======
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -320,11 +415,48 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1538153144093</updated>
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="-179" y="79" width="1386" height="788" extended-state="0" />
+=======
+<<<<<<< HEAD
+    <frame x="-47" y="149" width="1936" height="1056" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.09701493" />
+      <window_info anchor="right" id="R Packages" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="right" id="R Graphics" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="SciView" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+=======
+    <frame x="195" y="36" width="1386" height="788" extended-state="0" />
+>>>>>>> 7ece4ea891efcb2414975d2f7066bc24fba81bd6
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24434389" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -350,10 +482,22 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="processedProjectFiles" value="true" />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+<<<<<<< HEAD
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/celery_pro/tasks.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/celery_pro/spider/getPictureData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+=======
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
@@ -375,15 +519,26 @@
             <element signature="e#0#15#0" expanded="true" />
             <marker date="1538153269328" expanded="true" signature="2708:2775" ph="SELECT * FRO... picture" />
             <marker date="1538153269328" expanded="true" signature="3728:3846" ph="insert into picture... " />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/celery_pro/spider/getArticleData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="137" selection-start-line="137" selection-end-line="137" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+=======
     <entry file="file://$PROJECT_DIR$/celery_pro/utils/common.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+>>>>>>> afe742d04704176b3be4a404e892470ed1bfe52c
         </state>
       </provider>
     </entry>
