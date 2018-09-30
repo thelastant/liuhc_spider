@@ -303,12 +303,10 @@ class GetPictureData(object):
             img_src = self.deal_data(html=img_data, xpath_pattern=self.xpath_pattern_11)[0]
 
             # 拼接src
-            print(img_src)
             if len(img_src) < 15:
-                img_src = "http://908181.com" + img_src
+                img_src = "http://908181.com" + img_src[1:2]
             else:
                 img_src = img_src
-
             # img_content = self.get_response(url=img_src, response_type=2)  # 请求src返回体，图片数据，存入七牛，暂时废弃
 
             # 检查图片是否已经存入数据库
@@ -342,7 +340,6 @@ class GetPictureData(object):
         if not img_src:
             print("==图片下载失败==url==%s" % url)
             return False
-        print("==============", type_num, img_src)
         # 获取图片数据src
         try:
             if type_num == 15 or type_num == 16:
@@ -351,6 +348,9 @@ class GetPictureData(object):
             print(type_num, img_src, "=======下载失败")
             return False
 
+        if type_num > 56:
+            img_src = "http://www.908282.com" + img_src[2:]
+        print("==============", type_num, img_src)
         # 更新数据库
         data["type_num"] = type_num
         data["img_src"] = img_src
@@ -388,7 +388,7 @@ class GetPictureData(object):
 
             if not result:
                 print("图片更新失败,将会重新爬取整个网站！")
-                self.run_picture_1(save_method=2)
+                # self.run_picture_1(save_method=2)
                 self.run_picture_3(save_method=2)
                 print("所有数据更新成功！")
                 break
