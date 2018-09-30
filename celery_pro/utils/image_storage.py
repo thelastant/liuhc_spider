@@ -3,6 +3,7 @@
 import logging
 from qiniu import Auth, put_data
 from celery_pro.utils.config import config
+from PIL import Image
 
 
 def storage(data):
@@ -46,3 +47,22 @@ def run_save_img(img_num, img_data):
     f.close()
     print(file_name, "图片存入七牛成功")
     return src
+
+
+def save_img_and_get_info(img_num, img_data):
+    """  保存图片到本地   """
+    file_name = str(img_num) + ".jpg"
+    if img_num == 15:
+        file_name = str(img_num) + ".gif"
+
+    # 图片存入本地
+    with open("picture/" + file_name, "wb") as f:
+        f.write(img_data)
+    f.close()
+    print(file_name, "图片已存入本地")
+    im = Image.open("picture/" + file_name)  # 返回一个Image对象
+    print('宽：%d,高：%d' % (im.size[0], im.size[1]))
+    img = {}
+    img["high"] = im.size[0]
+    img["width"] = im.size[1]
+    return img
