@@ -38,14 +38,14 @@ class GetPictureData(object):
 
     def get_response(self, url, response_type=1):
         if response_type == 1:
-            response = requests.get(url=url, timeout=15)
+            response = requests.get(url=url)
             response = response.text.encode(response.encoding).decode("utf-8")
             html = etree.HTML(response)
         elif response_type == 2:
-            response = requests.get(url=url, timeout=15)
+            response = requests.get(url=url)
             html = response.content
         else:
-            response = requests.get(url=url, timeout=15)
+            response = requests.get(url=url)
             response = response.text
             html = etree.HTML(response)
         return html
@@ -54,14 +54,14 @@ class GetPictureData(object):
         data = html.xpath(xpath_pattern)
         return data
 
-    def check_is_save(self, periods, source, img_src):
+    def check_is_save(self, type_num, source, img_src):
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
         cur = db.cursor()
-        sql_insert = "SELECT * FROM picture WHERE periods=%s AND source=%s AND img_src=%s"
+        sql_insert = "SELECT * FROM picture WHERE type=%s AND source=%s AND img_src=%s"
 
         try:
-            res = cur.execute(sql_insert, (periods, source, img_src))
+            res = cur.execute(sql_insert, (type_num, source, img_src))
         except Exception as e:
             print(e)
             return False
@@ -74,24 +74,23 @@ class GetPictureData(object):
     def save_to_db(self, **kwargs):
         img_title = kwargs.get("img_title", None)
         img_src = kwargs.get("img_src", None)
-        # create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        create_time = time.time()
+        create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # create_time = time.time()
         source = kwargs.get("source_url")
         source_type = kwargs.get("type_num")
         status = 1
-        periods = kwargs.get("periods", None)
         # true_src = kwargs.get("true_src", None)
         # 2.插入操作
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
 
         cur = db.cursor()
-        sql_insert = "insert into picture(create_time,img_title,img_src,source,status,periods,type) values(%s,%s,%s,%s,%s,%s,%s)"
+        sql_insert = "insert into picture(create_time,img_title,img_src,source,status,type) values(%s,%s,%s,%s,%s,%s)"
         try:
-            cur.execute(sql_insert, (create_time, img_title, img_src, source, status, periods, source_type))
+            cur.execute(sql_insert, (create_time, img_title, img_src, source, status, source_type))
             # 提交
             db.commit()
-            print(img_title, img_src, create_time, source, periods, "存入数据库成功!!!!!!!!!")
+            print(img_title, img_src, create_time, source, "存入数据库成功!!!!!!!!!")
         except Exception as e:
             # 错误回滚
             print("保存图片失败", e)
@@ -101,8 +100,8 @@ class GetPictureData(object):
 
     def update_picture(self, **kwargs):
         img_src = kwargs.get("img_src", None)
-        # create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        update_time = time.time()
+        update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # update_time = time.time()
         source = kwargs.get("source_url")
         source_type = kwargs.get("type_num")
         # true_src = kwargs.get("true_src", None)
@@ -111,7 +110,7 @@ class GetPictureData(object):
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
 
         cur = db.cursor()
-        sql_insert = "UPDATE picture SET create_time=%s,img_src=%s WHERE source=%s AND type=%s"
+        sql_insert = "UPDATE picture SET update_time=%s,img_src=%s WHERE source=%s AND type=%s"
         # sql_insert = "UPDATE USER SET PASSWORD='"+pwd+"' WHERE NAME='"+name+"'"
 
         try:
@@ -126,7 +125,7 @@ class GetPictureData(object):
         finally:
             db.close()
 
-    def save_in_qiniu(self, type_num, img_content, img_title, img_src, periods, url):
+    def save_in_qiniu(self, type_num, img_content, img_title, img_src, url):
         data = {}
         try:
             true_img_url = run_save_img(img_num=type_num, img_data=img_content)
@@ -138,7 +137,6 @@ class GetPictureData(object):
         # 存入数据库
         data["img_title"] = img_title
         data["img_src"] = img_src
-        data["periods"] = periods
         data["true_src"] = true_img_url
         data["source_url"] = url
         data["source_type"] = 1
@@ -179,9 +177,9 @@ class GetPictureData(object):
         """  第一个网站  """
 
         total_picture = 56
-        periods = self.check_new_periods(source_type=1)
-        if not periods:
-            return False
+        # periods = self.check_new_periods(source_type=1)
+        # if not periods:
+        #     return False
 
         for type_num in range(1, total_picture + 1):
             data = {}
@@ -209,12 +207,11 @@ class GetPictureData(object):
             if not all([img_src, img_title]):
                 print("==%s图片下载失败==url==%s" % (img_title, url))
                 continue
-            print("==============", type_num, img_src)
             # 获取图片数据src
             try:
                 if type_num == 15 or type_num == 16:
                     img_src = "http://908181.com/" + img_src
-                # img_content = self.get_response(url=img_src, response_type=2)     # 用来保存到七牛的图片数据，暂时废弃
+                    # img_content = self.get_response(url=img_src, response_type=2)     # 用来保存到七牛的图片数据，暂时废弃
             except:
                 print(type_num, img_title, "=======下载失败")
                 continue
@@ -230,7 +227,6 @@ class GetPictureData(object):
             #                           img_src=img_src, periods=periods, url=url)
 
             data["type_num"] = type_num
-            data["periods"] = periods
             data["source_url"] = url
             data["img_src"] = img_src
             data["img_title"] = img_title
@@ -241,16 +237,17 @@ class GetPictureData(object):
             else:
                 raise ("请输入正确的存储方式")
 
-            # # 下载失败后在队列中取出来，重新请求下载
-            # while not self.q.empty():
-            #     a = self.q.get()
-            #     print(a, "qqqqqqq")
+                # # 下载失败后在队列中取出来，重新请求下载
+                # while not self.q.empty():
+                #     a = self.q.get()
+                #     print(a, "qqqqqqq")
+            print("==============", type_num, img_src)
 
     def run_picture_2(self):
         """  第二个网站  """
-        periods = self.check_new_periods(source_type=1)
-        if not periods:
-            return False
+        # periods = self.check_new_periods(source_type=1)
+        # if not periods:
+        #     return False
         img_response = self.get_response(url=self.index_url_2)
         img_url_list = self.deal_data(html=img_response, xpath_pattern=self.xpath_pattern_8)
         type_num = 56
@@ -263,30 +260,41 @@ class GetPictureData(object):
             img_content = self.get_response(url=img_src, response_type=2)  # 请求src返回体，图片数据
 
             # 检查图片是否已经存入数据库
-            is_save = self.check_is_save(periods=periods, source=img_url, img_src=img_src)
+            is_save = self.check_is_save(type_num=type_num, source=img_url, img_src=img_src)
             if is_save:
-                print("=================img has been save", periods, img_title, img_src)
+                print("=================img has been save", img_title, img_src)
                 continue
             # 图片存入七牛云
             data = self.save_in_qiniu(type_num=type_num, img_content=img_content, img_title=img_title, img_src=img_src,
-                                      periods=periods, url=img_url)
+                                      url=img_url)
             # 图片存入数据库
             self.save_to_db(**data)
 
-    def run_picture_3(self,save_method=1):
+    def run_picture_3(self, save_method=1):
         """  第一个网站公式图片  """
         data = {}
-        periods = self.check_new_periods(source_type=1)
-        if not periods:
-            print("end====")
-            return False
-        img_response = self.get_response(url=self.index_url_3)
+        # periods = self.check_new_periods(source_type=1)
+        # if not periods:
+        #     print("end====")
+        #     return False
+        try:
+            img_response = self.get_response(url=self.index_url_3)
+        except:
+            img_response = self.get_response(url=self.index_url_3)
         img_url_list = self.deal_data(html=img_response, xpath_pattern=self.xpath_pattern_9)
         type_num = 56
         for img in img_url_list:
             type_num += 1
             img_url = "http://908181.com/gs/" + img  # 图片url
-            img_data = self.get_response(url=img_url, response_type=1)  # 图片页面所有内容（包含文字）
+
+            try:
+                img_data = self.get_response(url=img_url, response_type=1)  # 图片页面所有内容（包含文字）
+            except:
+                try:
+                    img_data = self.get_response(url=img_url, response_type=1)  # 图片页面所有内容（包含文字）
+                except:
+                    img_data = self.get_response(url=img_url, response_type=1)  # 图片页面所有内容（包含文字）
+
             img_deal_data = self.deal_data(html=img_data, xpath_pattern=self.xpath_pattern_10)[0]
             img_title_1 = img_deal_data.xpath("text()")[0]
             img_title_3 = img_deal_data.xpath("text()")[1]
@@ -312,7 +320,6 @@ class GetPictureData(object):
             # data = self.save_in_qiniu(type_num=type_num, img_content=img_content, img_title=img_title, img_src=img_src,
             #                           periods=periods, url=img_url)
             data["type_num"] = type_num
-            data["periods"] = periods
             data["source_url"] = img_url
             data["img_src"] = img_src
             data["img_title"] = img_title
@@ -322,6 +329,7 @@ class GetPictureData(object):
                 self.update_picture(**data)
             else:
                 raise ("请输入正确的存储方式")
+            print("==============", type_num, img_src)
 
     def run_one_picture(self, url, type_num, xpath_pattern_1):
         data = {}
@@ -351,7 +359,6 @@ class GetPictureData(object):
         return True
 
     def run(self):
-
         # 第一次开启的时候，数据库没数据时候，先启动这两个，然后注释掉这个，后续都不需要了
         # self.run_picture_1()
         # self.run_picture_3()
@@ -363,24 +370,28 @@ class GetPictureData(object):
                 xpath_pattern_img = self.xpath_pattern_1
             else:
                 xpath_pattern_img = self.xpath_pattern_11
-            # 检查图片是否存在，如果图片不存在，则重新爬取
+            # # 检查图片是否存在，如果图片不存在，则重新爬取
+            # try:
+            #     res = self.get_response(url=img_src_cai_tu[i], response_type=2)
+            # except:
+            #     res = None
+            # if res:
+            #     print("图片%d正常显示" % i)
+            #     continue
+            # else:
             try:
-                res = self.get_response(url=img_src_cai_tu[i], response_type=2)
-            except:
-                res = None
-            if res:
-                print("图片%d正常显示" % i)
-                continue
-            else:
-                print("%d图片显示异常，重新更新此图片" % i)
                 result = self.run_one_picture(url=img_src_cai_tu_source[i], type_num=i,
                                               xpath_pattern_1=xpath_pattern_img)
-                if not result:
-                    print("图片更新失败,将会重新爬取整个网站！")
-                    self.run_picture_1(save_method=2)
-                    self.run_picture_3(save_method=2)
-                    print("所有数据更新成功！")
-                    break
+            except:
+                result = self.run_one_picture(url=img_src_cai_tu_source[i], type_num=i,
+                                              xpath_pattern_1=xpath_pattern_img)
+
+            if not result:
+                print("图片更新失败,将会重新爬取整个网站！")
+                self.run_picture_1(save_method=2)
+                self.run_picture_3(save_method=2)
+                print("所有数据更新成功！")
+                break
         print("所有图片检查完成")
 
 
