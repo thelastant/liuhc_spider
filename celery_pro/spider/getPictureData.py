@@ -367,5 +367,5 @@ class GetPictureData(object):
 
 
 # # 测试！！！！！！！！！！
-obj = GetPictureData()
-obj.run()
+# obj = GetPictureData()
+# obj.run()
