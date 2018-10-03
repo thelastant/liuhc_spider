@@ -17,6 +17,6 @@ session = Session()
 
 @app.task
 def liu_task():
-    spider_result = GetPictureData(first=1, second=1, third=1).run()
-    if spider_result:
-        return "success"
+    # # 测试！！！！！！！！！！
+    obj = GetPictureData()
+    obj.run()

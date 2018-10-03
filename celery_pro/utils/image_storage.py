@@ -63,6 +63,6 @@ def save_img_and_get_info(img_num, img_data):
     im = Image.open("picture/" + file_name)  # 返回一个Image对象
     print('宽：%d,高：%d' % (im.size[0], im.size[1]))
     img = {}
-    img["high"] = im.size[0]
-    img["width"] = im.size[1]
+    img["high"] = im.size[1]
+    img["width"] = im.size[0]
     return img

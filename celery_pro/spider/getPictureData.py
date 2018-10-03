@@ -42,10 +42,10 @@ class GetPictureData(object):
             response = response.text.encode(response.encoding).decode("utf-8")
             html = etree.HTML(response)
         elif response_type == 2:
-            response = requests.get(url=url,timeout=15)
+            response = requests.get(url=url, timeout=15)
             html = response.content
         else:
-            response = requests.get(url=url,timeout=15)
+            response = requests.get(url=url, timeout=15)
             response = response.text
             html = etree.HTML(response)
         return html
@@ -105,7 +105,6 @@ class GetPictureData(object):
         source_type = kwargs.get("type_num")
         img_high = kwargs.get("img_high")
         img_width = kwargs.get("img_width")
-
         # 2.插入操作
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
@@ -214,7 +213,7 @@ class GetPictureData(object):
             img_content = self.get_response(url=img_src, response_type=2)
             img_info = save_img_and_get_info(img_num=type_num, img_data=img_content)
             data["img_high"] = img_info["high"]
-            data["img_width"] = img_info["high"]
+            data["img_width"] = img_info["width"]
             data["type_num"] = type_num
             data["source_url"] = url
             data["img_src"] = img_src
@@ -291,7 +290,7 @@ class GetPictureData(object):
             except:
                 img_info = {"img_high": 0, "img_width": 0}
             data["img_high"] = img_info["high"]
-            data["img_width"] = img_info["high"]
+            data["img_width"] = img_info["width"]
             data["type_num"] = type_num
             data["source_url"] = img_url
             data["img_src"] = img_src
@@ -336,7 +335,7 @@ class GetPictureData(object):
         data["img_src"] = img_src
         data["source_url"] = url
         data["img_high"] = img_info["high"]
-        data["img_width"] = img_info["high"]
+        data["img_width"] = img_info["width"]
         self.update_picture(**data)
         return True
 
@@ -368,5 +367,5 @@ class GetPictureData(object):
 
 
 # # 测试！！！！！！！！！！
-obj = GetPictureData()
-obj.run()
+# obj = GetPictureData()
+# obj.run()

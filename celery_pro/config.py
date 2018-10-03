@@ -22,6 +22,6 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULE = {
     'liu_task': {
         'task': 'celery_pro.tasks.liu_task',
-        'schedule': crontab(minute="*/30"),
+        'schedule': crontab(hour="*/1"),
     },
 }
