@@ -73,6 +73,8 @@ class GetArticleData(object):
 
     def save_to_db(self, **kwargs):
         title = kwargs.get("title", None)
+        title_2 = kwargs.get("title_2", None)
+        title_id = kwargs.get("title_id", None)
         periods = kwargs.get("periods", None)
         create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         source = kwargs.get("source_url")
@@ -84,11 +86,13 @@ class GetArticleData(object):
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
         cur = db.cursor()
-        sql_insert = "insert into article(create_time,title,periods,source_url,status,guess_all,guess_true,result) values(%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_insert_1 = "insert into article(create_time,title,periods,source_url,status,guess_all,guess_true,result,title_id) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_insert_2 = "insert into article_title(rid,title) values(%s,%s)"
         try:
-            cur.execute(sql_insert, (create_time, title, periods, source, status, guess_all, guess_true, result))
-            # 提交
+            cur.execute(sql_insert_1,
+                        (create_time, title_2, periods, source, status, guess_all, guess_true, result, title_id))
             db.commit()
+            # 提交
         except Exception as e:
             # 错误回滚
             print("保存图片失败", e)
@@ -116,6 +120,48 @@ class GetArticleData(object):
         periods = int(periods)
         return periods
 
+    def save_to_db_2(self, **kwargs):
+        title = kwargs.get("title", None)
+        title_id = kwargs.get("title_id", None)
+        create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        status = 1
+        # 2.插入操作
+        db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
+                             password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
+        cur = db.cursor()
+        sql_insert_1 = "insert into article(create_time,title,periods,source_url,status,guess_all,guess_true,result,title_id) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_insert_2 = "insert into article_title(rid,title,status,create_time) values(%s,%s,%s,%s)"
+        try:
+            cur.execute(sql_insert_2, (title_id, title, status, create_time))
+            db.commit()
+                # 提交
+        except Exception as e:
+            # 错误回滚
+            print("保存数据库失败", e)
+            db.rollback()
+        finally:
+            db.close()
+
+        def check_new_periods(self, source_type):
+
+            if source_type == 1:
+                source_url = self.get_periods_url_1
+                xpath_pattern = self.xpath_pattern_3
+                # source = self.index_url
+                response_type = 1
+            elif source_type == 2:
+                source_url = self.get_periods_url_2
+                xpath_pattern = self.xpath_pattern_4
+                # source = self.index_url_2
+                response_type = 3
+
+            else:
+                return False
+            res = self.get_response(url=source_url, response_type=response_type)
+            periods = self.deal_data(html=res, xpath_pattern=xpath_pattern)[0][:3]
+            periods = int(periods)
+            return periods
+
     def run_article_1(self):
         """  908282网站文章  """
         # 第一层获取文章链接
@@ -132,10 +178,12 @@ class GetArticleData(object):
             title_2 = data.xpath("font/text()")[0]
             title = title_1 + title_2
             periods = int(title_1[1:4])
-            print(href, title_1, title_2, periods)
-            self.deal_article_data_1(href=href, title=title, periods=periods)
+            title_id = int(str(periods) + str(num))
 
-    def deal_article_data_1(self, href, title, periods):
+            print(href, title_1, title_2, periods, title_id)
+            self.deal_article_data_1(href=href, title=title, periods=periods, title_id=title_id, title_2=title_2)
+
+    def deal_article_data_1(self, href, title, periods, title_id, title_2):
         response = self.get_response(url=href, response_type=1)
         data_list = self.deal_data(html=response, xpath_pattern=self.xpath_pattern_6)
         num = 0
@@ -145,9 +193,11 @@ class GetArticleData(object):
             data_list["title"] = title
             data_list["periods"] = periods
             data_list["result"] = data
+            data_list["title_id"] = title_id
+            data_list["title_2"] = title_2
             print(num, "===>", data_list)
             self.save_to_db(**data_list)
-
+            self.save_to_db_2(**data_list)
 
 
             # if len(href[0]) <= 17:
