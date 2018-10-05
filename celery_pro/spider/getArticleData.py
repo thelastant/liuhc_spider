@@ -54,25 +54,33 @@ class GetArticleData(object):
         data = html.xpath(xpath_pattern)
         return data
 
-    def check_is_save(self, periods, source, img_src):
+    def check_is_save(self, periods=None, result=None, title=None, title_id=None):
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
         cur = db.cursor()
-        sql_insert = "SELECT * FROM picture WHERE periods=%s AND source=%s AND img_src=%s"
-
-        try:
-            res = cur.execute(sql_insert, (periods, source, img_src))
-        except Exception as e:
-            print(e)
-            return False
-        db.close()
+        sql_insert = "SELECT * FROM article WHERE periods=%s AND title=%s AND result=%s"
+        sql_insert_2 = "SELECT * FROM article_title WHERE title=%s AND rid=%s"
+        if title_id:
+            try:
+                res = cur.execute(sql_insert_2, (title, title_id))
+            except Exception as e:
+                print(e, "title db ======")
+                return False
+            db.close()
+        else:
+            try:
+                res = cur.execute(sql_insert, (periods, title, result))
+            except Exception as e:
+                print(e, "result db======")
+                return False
+            db.close()
         if res:
             return True
         else:
             return False
 
     def save_to_db(self, **kwargs):
-        title = kwargs.get("title", None)
+
         title_2 = kwargs.get("title_2", None)
         title_id = kwargs.get("title_id", None)
         periods = kwargs.get("periods", None)
@@ -82,12 +90,22 @@ class GetArticleData(object):
         status = 1
         guess_true = kwargs.get("guess_right", None)
         result = kwargs.get("result", None)
-        # 2.插入操作
+
+        # 检查是否重复存储
+        try:
+            is_save = self.check_is_save(periods=periods, result=result, title=title_2)
+        except:
+            is_save = None
+
+        if is_save:
+            print("数据已存在，请勿重复存储")
+            return
+
+            # 2.插入操作
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
         cur = db.cursor()
         sql_insert_1 = "insert into article(create_time,title,periods,source_url,status,guess_all,guess_true,result,title_id) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        sql_insert_2 = "insert into article_title(rid,title) values(%s,%s)"
         try:
             cur.execute(sql_insert_1,
                         (create_time, title_2, periods, source, status, guess_all, guess_true, result, title_id))
@@ -125,16 +143,25 @@ class GetArticleData(object):
         title_id = kwargs.get("title_id", None)
         create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         status = 1
+
+        # 检查是否重复存储数据库
+        try:
+            is_save = self.check_is_save(title_id=title_id, title=title)
+        except:
+            is_save = None
+        if is_save:
+            print("请勿重复存储")
+            return
+
         # 2.插入操作
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
         cur = db.cursor()
-        sql_insert_1 = "insert into article(create_time,title,periods,source_url,status,guess_all,guess_true,result,title_id) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         sql_insert_2 = "insert into article_title(rid,title,status,create_time) values(%s,%s,%s,%s)"
         try:
             cur.execute(sql_insert_2, (title_id, title, status, create_time))
             db.commit()
-                # 提交
+            # 提交
         except Exception as e:
             # 错误回滚
             print("保存数据库失败", e)
@@ -184,20 +211,27 @@ class GetArticleData(object):
             self.deal_article_data_1(href=href, title=title, periods=periods, title_id=title_id, title_2=title_2)
 
     def deal_article_data_1(self, href, title, periods, title_id, title_2):
+
         response = self.get_response(url=href, response_type=1)
         data_list = self.deal_data(html=response, xpath_pattern=self.xpath_pattern_6)
         num = 0
+        # 一篇文章存一次标题
+        title_dict = {}
+        title_dict["title"] = title
+        title_dict["title_id"] = title_id
+        self.save_to_db_2(**title_dict)
+
         for data in data_list:
             data_list = {}
             data_list["source_url"] = href
             data_list["title"] = title
             data_list["periods"] = periods
-            data_list["result"] = data
+            data_list["result"] = data.strip()
             data_list["title_id"] = title_id
             data_list["title_2"] = title_2
             print(num, "===>", data_list)
+
             self.save_to_db(**data_list)
-            self.save_to_db_2(**data_list)
 
 
             # if len(href[0]) <= 17:
