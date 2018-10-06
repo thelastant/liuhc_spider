@@ -273,7 +273,8 @@ class GetPictureData(object):
                     img_data = self.get_response(url=img_url, response_type=1)  # 图片页面所有内容（包含文字）
 
             img_deal_data = self.deal_data(html=img_data, xpath_pattern=self.xpath_pattern_10)[0]
-            img_title_1 = img_deal_data.xpath("text()")[0]
+            # img_title_1 = img_deal_data.xpath("text()")[0]
+            img_title_1 = "【"
             img_title_3 = img_deal_data.xpath("text()")[1]
             img_title_2 = img_deal_data.xpath("//font/text()")[0]
             img_title = img_title_1 + img_title_2 + img_title_3
@@ -367,5 +368,5 @@ class GetPictureData(object):
 
 
 # # 测试！！！！！！！！！！
-# obj = GetPictureData()
-# obj.run()
+obj = GetPictureData()
+obj.run()
