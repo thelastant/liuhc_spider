@@ -25,17 +25,6 @@ class GetArticleData(object):
         self.xpath_pattern_5 = "//td/a"  # 精华帖子a标签筛选规则
         self.xpath_pattern_6 = "//tr/td/font/text()"  # 帖子内容筛选规则
 
-        # self.index_url_2 = "http://9542.34266.com/9542zl/tg.htm"  # 第二网站基础url
-        # self.last_url = "http://908181.com/caitu/%E7%BA%A2%E8%B4%A2%E7%A5%9E.gif"
-        # self.xpath_pattern_4 = "//tr[1]/td[1]/font/span/a/font/text()"  # 第二网站的期数筛选规则
-        # self.get_periods_url_1 = "http://www.908282.com/908181.html"  # 第一网站筛选期数 url
-        # self.get_periods_url_2 = "http://9542.34266.com/9542zl/888.htm"  # 第二期数筛选期数url
-        #
-        # self.xpath_pattern_5 = "//p[2]/img/@src"  # 第二网站图片链接筛选规则 src
-        # self.xpath_pattern_6 = "//div/dl/dd/a/text()"  # 第二网站图片标题筛选规则
-        # self.xpath_pattern_7 = "//div/dl/dd/a/@href"  # 第二网站图片..筛选规则
-        # self.xpath_pattern_8 = "//div/dl/dd/a"  # 第二网站图片..筛选规则
-
     def get_response(self, url, response_type=1):
         if response_type == 1:
             response = requests.get(url=url)
@@ -101,7 +90,7 @@ class GetArticleData(object):
             print("数据已存在，请勿重复存储")
             return
 
-            # 2.插入操作
+        # 2.插入操作
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
         cur = db.cursor()
@@ -123,14 +112,11 @@ class GetArticleData(object):
         if source_type == 1:
             source_url = self.get_periods_url_1
             xpath_pattern = self.xpath_pattern_3
-            # source = self.index_url
             response_type = 1
         elif source_type == 2:
             source_url = self.get_periods_url_2
             xpath_pattern = self.xpath_pattern_4
-            # source = self.index_url_2
             response_type = 3
-
         else:
             return False
         res = self.get_response(url=source_url, response_type=response_type)
@@ -168,26 +154,6 @@ class GetArticleData(object):
             db.rollback()
         finally:
             db.close()
-
-        def check_new_periods(self, source_type):
-
-            if source_type == 1:
-                source_url = self.get_periods_url_1
-                xpath_pattern = self.xpath_pattern_3
-                # source = self.index_url
-                response_type = 1
-            elif source_type == 2:
-                source_url = self.get_periods_url_2
-                xpath_pattern = self.xpath_pattern_4
-                # source = self.index_url_2
-                response_type = 3
-
-            else:
-                return False
-            res = self.get_response(url=source_url, response_type=response_type)
-            periods = self.deal_data(html=res, xpath_pattern=xpath_pattern)[0][:3]
-            periods = int(periods)
-            return periods
 
     def run_article_1(self):
         """  908282网站文章  """
@@ -230,93 +196,7 @@ class GetArticleData(object):
             data_list["title_id"] = title_id
             data_list["title_2"] = title_2
             print(num, "===>", data_list)
-
             self.save_to_db(**data_list)
-
-
-            # if len(href[0]) <= 17:
-            #     href = "http://www.908282.com" + href[2:]
-            # print(href, title, "=========>success")
-            #
-            # try:
-            #     article_response = self.get_response(url=href)
-            # except:
-            #     print(href, title, "=========>fail")
-            #     return
-            # if self.deal_data(html=article_response, xpath_pattern=self.xpath_pattern_2):
-            #     article_list = self.deal_data(html=article_response, xpath_pattern=self.xpath_pattern_2)
-            # elif self.deal_data(html=article_response, xpath_pattern=self.xpath_pattern_3):
-            #     article_list = self.deal_data(html=article_response, xpath_pattern=self.xpath_pattern_3)
-            # else:
-            #     return
-            # for a in article_list:
-            #     data = {}
-            #     data["title"] = title
-            #     data["href"] = href
-            #     try:
-            #         text_1 = a.xpath("text()")[0].strip()
-            #         text_true = a.xpath("text()")[1].strip()
-            #         text_right_1 = a.xpath("span/font/text()")
-            #         text_guess = a.xpath("font/text()")
-            #         text_right_2 = a.xpath("font/span/text()")
-            #         data["periods"] = int(text_1[:3])
-            #     except:
-            #         text_1 = ""
-            #         text_true = ""
-            #         text_guess = []
-            #         text_right_1 = ""
-            #         text_right_2 = ""
-            #
-            #     if text_1 or text_true:
-            #         # 数据清洗，筛选出预测生肖
-            #         if text_guess:
-            #             text_guess_new = []
-            #             guess_result = ''
-            #             for res_1 in text_guess:
-            #                 if res_1 != "（":
-            #                     try:
-            #                         list_b = res_1.split(",")
-            #                     except:
-            #                         list_b = []
-            #                     for res_2 in list_b:
-            #                         if res_2 == '':
-            #                             continue
-            #                         try:
-            #                             f = res_2.split("）")
-            #                             for res_3 in f:
-            #                                 if res_3 != '':
-            #                                     try:
-            #                                         res = res_3.split("（")
-            #                                         for r in res:
-            #                                             if r != '':
-            #                                                 guess_result += ',%s' % r
-            #                                                 text_guess_new.append(r)
-            #                                     except:
-            #                                         continue
-            #                         except:
-            #                             pass
-            #         if text_right_1:
-            #             guess_result = guess_result + "," + text_right_1[0]
-            #             data["guess_right"] = text_right_1
-            #             print(text_1, text_right_1[0], text_guess_new, text_true, title, href, guess_result, "if===")
-            #         elif text_right_2:
-            #             guess_result = guess_result + "," + text_right_2[0]
-            #             data["guess_right"] = text_right_2
-            #             print(text_1, text_right_2[0], text_guess_new, text_true, title, href, guess_result, "elif==")
-            #         else:
-            #             if num == 2:  # 第二篇文章中最新一期预测筛选规则不一样
-            #                 guess_result = text_guess_new[0]
-            #             else:
-            #                 print(text_guess_new)
-            #                 guess_result = text_guess_new[0] + "," + text_guess_new[1] + "," + text_guess_new[2] + "," + \
-            #                                text_guess_new[3]
-            #             print(text_1, text_right_2, type(text_right_2), text_guess_new, text_true, href, "else==")
-            #         data["guess_all"] = guess_result
-            #         data["result"] = text_true
-            #         self.save_to_db(**data)
-            #         print(data, "data=============data")
-            #     else:
-            #         continue
 
     def run(self):
         self.run_article_1()

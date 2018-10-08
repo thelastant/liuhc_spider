@@ -105,16 +105,16 @@ class GetPictureData(object):
         source_type = kwargs.get("type_num")
         img_high = kwargs.get("img_high")
         img_width = kwargs.get("img_width")
+        img_title = kwargs.get("img_title")
         # 2.插入操作
         db = pymysql.connect(host=config.SPIDER_HOST, user=config.SPIDER_USER,
                              password=config.SPIDER_PASSWORD, db=config.SPIDER_DB, port=config.SPIDER_PORT)
 
         cur = db.cursor()
-        sql_insert = "UPDATE picture SET update_time=%s,img_src=%s,img_high=%s,img_width=%s WHERE source=%s AND type=%s"
-        # sql_insert = "UPDATE USER SET PASSWORD='"+pwd+"' WHERE NAME='"+name+"'"
+        sql_insert = "UPDATE picture SET update_time=%s,img_src=%s,img_high=%s,img_width=%s,img_title=%s WHERE source=%s AND type=%s"
 
         try:
-            cur.execute(sql_insert, (update_time, img_src, img_high, img_width, source, source_type))
+            cur.execute(sql_insert, (update_time, img_src, img_high, img_width, img_title, source, source_type))
             # 提交
             db.commit()
             print(img_src, update_time, source, "更新数据库成功!!!!!!!!!")
@@ -167,10 +167,6 @@ class GetPictureData(object):
         periods = self.deal_data(html=res, xpath_pattern=xpath_pattern)[0][:3]
         print(periods)
         periods = int(periods)
-        # 检查数据是否最新
-        # if self.check_is_save(periods=periods, source=source):
-        #     print("已经是最新的一期了")
-        #     return False
         return periods
 
     def run_picture_1(self, save_method=1):
@@ -331,12 +327,21 @@ class GetPictureData(object):
         except:
             img_info = {"img_high": 0, "img_width": 0}
 
+        # 获取图片标题
+
+        img_deal_data = self.deal_data(html=html, xpath_pattern=self.xpath_pattern_10)[0]
+        img_title_1 = "【"
+        img_title_3 = img_deal_data.xpath("text()")[1]
+        img_title_2 = img_deal_data.xpath("//font/text()")[0]
+        img_title = img_title_1 + img_title_2 + img_title_3
+        print(img_title)
         # 更新数据库
         data["type_num"] = type_num
         data["img_src"] = img_src
         data["source_url"] = url
         data["img_high"] = img_info["high"]
         data["img_width"] = img_info["width"]
+        data["img_title"] = img_title
         self.update_picture(**data)
         return True
 
@@ -349,6 +354,7 @@ class GetPictureData(object):
                 xpath_pattern_img = self.xpath_pattern_1
             else:
                 xpath_pattern_img = self.xpath_pattern_11
+
             try:
                 result = self.run_one_picture(url=img_src_cai_tu_source[i], type_num=i,
                                               xpath_pattern_1=xpath_pattern_img)
@@ -356,7 +362,8 @@ class GetPictureData(object):
                 try:
                     result = self.run_one_picture(url=img_src_cai_tu_source[i], type_num=i,
                                                   xpath_pattern_1=xpath_pattern_img)
-                except:
+                except Exception as e:
+                    print(e)
                     continue
             if not result:
                 print("图片更新失败,将会重新爬取整个网站！")
