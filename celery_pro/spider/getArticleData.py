@@ -4,6 +4,7 @@ from queue import Queue
 import pymysql
 from celery_pro.utils.config import config
 from datetime import datetime
+from celery_pro.utils.common import article_url
 
 
 class GetArticleData(object):
@@ -13,17 +14,15 @@ class GetArticleData(object):
         self.q = Queue()
         self.base_url = "http://www.908282.com"
 
-        self.index_url = "http://www.908282.com/bbs/888.html"  # 第一网站基础url
-        self.xpath_pattern_1 = "//tr/td/a"  # 获取文章规则（a标签）
-        self.xpath_pattern_2 = "//tr/td/p/font/b"  # 获取文章内容规则1
-        self.xpath_pattern_3 = "//tr/td/font"  # 获取文章标题2
-        self.xpath_pattern_4 = "//tr/td/font/font"  # 获取网站2 预测内容规则
-
-        self.index_url_8 = "http://www.908282.com/bbs/pt.html"  # 这个是平特一肖的开奖url
-        self.index_url_9 = "http://www.908282.com/bbs/1166.html"  # 这个是规律六肖的开奖url
+        # 有规律的帖子
         self.index_url_10 = "http://www.908282.com/bbs/999.html"  # 这个精华帖子主页url
         self.xpath_pattern_5 = "//td/a"  # 精华帖子a标签筛选规则
         self.xpath_pattern_6 = "//tr/td/font/text()"  # 帖子内容筛选规则
+
+        # 没有规律的帖子
+        self.index_url = "http://www.908282.com/bbs/888.html"  # 第一网站基础url
+        self.xpath_pattern_1 = "//tr[4]/td/a/text()[1]"  # 获取期数的筛选规则
+        self.xpath_pattern_2 = "//tr/td/font/span"  # 获取第一篇文章筛选规则
 
     def get_response(self, url, response_type=1):
         if response_type == 1:
@@ -107,24 +106,8 @@ class GetArticleData(object):
         finally:
             db.close()
 
-    def check_new_periods(self, source_type):
-
-        if source_type == 1:
-            source_url = self.get_periods_url_1
-            xpath_pattern = self.xpath_pattern_3
-            response_type = 1
-        elif source_type == 2:
-            source_url = self.get_periods_url_2
-            xpath_pattern = self.xpath_pattern_4
-            response_type = 3
-        else:
-            return False
-        res = self.get_response(url=source_url, response_type=response_type)
-        periods = self.deal_data(html=res, xpath_pattern=xpath_pattern)[0][:3]
-        periods = int(periods)
-        return periods
-
     def save_to_db_2(self, **kwargs):
+        """   存入文章标题   """
         title = kwargs.get("title", None)
         title_id = kwargs.get("title_id", None)
         create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -176,11 +159,60 @@ class GetArticleData(object):
             print(href, title_1, title_2, periods, title_id)
             self.deal_article_data_1(href=href, title=title, periods=periods, title_id=title_id, title_2=title_2)
 
+    def run_article_new(self):
+
+        # 获取期数
+        try:
+            html = self.get_response(url=self.index_url)
+        except:
+            print("爬取失败")
+            return
+        periods = self.deal_data(html=html, xpath_pattern=self.xpath_pattern_1)[0][1:4]
+        if periods:
+            periods = int(periods)
+        num = 8
+        for i in range(1, 13):
+            num += 1
+            if i not in [1]:
+                break
+            response = self.get_response(url=article_url[i])
+            data = self.deal_data(html=response, xpath_pattern=self.xpath_pattern_2)
+            title_0 = self.deal_data(html=response, xpath_pattern="//div/h2/font/text()")[0]
+
+            article_title_dict = {}
+            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + " " + title_0
+            article_title_dict["title_id"] = str(periods) + str(num)
+
+            # 保存标题
+            self.save_to_db_2(**article_title_dict)
+
+            for d in data:
+                result_1 = d.xpath("font[1]/text()")[0]  # 期数标题
+                result_2 = d.xpath("font[2]/text()")[0]  # 预测内容1
+                if len(result_2) > 14:
+                    result_2 = " 【预测数据暂未公布1】"
+                try:
+                    result_3 = d.xpath("font[2]/text()")[1]  # 预测内容
+                except:
+                    result_3 = ''
+                try:
+                    result_4 = d.xpath("font[2]/span/text()")[0]
+                except:
+                    result_4 = ''
+                try:
+                    result_5 = d.xpath("font[3]/text()")[0]
+                except:
+                    result_5 = ''
+                result = result_1 + result_2 + result_4 + result_3 + result_5
+                self.deal_article_data_2(href=article_url[i], title=title_0, title_2=article_title_dict["title"],
+                                         periods=periods,
+                                         title_id=article_title_dict["title_id"], result=result)
+                print(result, periods, title_0)
+
     def deal_article_data_1(self, href, title, periods, title_id, title_2):
 
         response = self.get_response(url=href, response_type=1)
         data_list = self.deal_data(html=response, xpath_pattern=self.xpath_pattern_6)
-        num = 0
         # 一篇文章存一次标题
         title_dict = {}
         title_dict["title"] = title
@@ -195,12 +227,24 @@ class GetArticleData(object):
             data_list["result"] = data.strip()
             data_list["title_id"] = title_id
             data_list["title_2"] = title_2
-            print(num, "===>", data_list)
+            print("===>", data_list)
             self.save_to_db(**data_list)
+
+    def deal_article_data_2(self, href, title, periods, title_id, title_2, result):
+        # 一篇文章存一次标题
+        data_list = {}
+        data_list["source_url"] = href
+        data_list["periods"] = periods
+        data_list["result"] = result
+        data_list["title_id"] = title_id
+        data_list["title_2"] = title
+        print("===>", result)
+        self.save_to_db(**data_list)
 
     def run(self):
         self.run_article_1()
+        self.run_article_new()
 
 
 obj = GetArticleData()
-obj.run_article_1()
+obj.run()

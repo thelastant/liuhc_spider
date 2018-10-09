@@ -163,3 +163,19 @@ img_src_cai_tu_source = {
     80: "http://908181.com/gs/01.html",
 
 }
+
+article_url = {
+    1: "http://www.908282.com/bbs/1200.html",
+    2: "http://www.908282.com/bbs/1201.html",
+    3: "http://www.908282.com/bbs/1202.html",
+    4: "http://www.908282.com/bbs/1203.html",
+    5: "http://www.908282.com/bbs/1204.html",
+    6: "http://www.908282.com/bbs/1205.html",
+    7: "http://www.908282.com/bbs/1206.html",
+    8: "http://www.908282.com/bbs/1207.html",
+    9: "http://www.908282.com/bbs/1208.html",
+    10: "http://www.908282.com/bbs/1209.html",
+    11: "http://www.908282.com/bbs/1210.html",
+    12: "http://www.908282.com/bbs/1211.html",
+
+}
