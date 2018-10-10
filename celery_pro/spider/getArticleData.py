@@ -180,7 +180,7 @@ class GetArticleData(object):
             title_0 = self.deal_data(html=response, xpath_pattern="//div/h2/font/text()")[0]
 
             article_title_dict = {}
-            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + " " + title_0
+            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + " " + "【" + title_0 + "】"
             article_title_dict["title_id"] = str(periods) + str(num)
 
             # 保存标题
@@ -190,7 +190,7 @@ class GetArticleData(object):
                 result_1 = d.xpath("font[1]/text()")[0]  # 期数标题
                 result_2 = d.xpath("font[2]/text()")[0]  # 预测内容1
                 if len(result_2) > 14:
-                    result_2 = " 【预测数据暂未公布1】"
+                    result_2 = " 【预测数据暂未公布】"
                 try:
                     result_3 = d.xpath("font[2]/text()")[1]  # 预测内容
                 except:
