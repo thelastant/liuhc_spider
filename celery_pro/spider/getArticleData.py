@@ -204,8 +204,7 @@ class GetArticleData(object):
                 except:
                     result_5 = ''
                 result = result_1 + result_2 + result_4 + result_3 + result_5
-                self.deal_article_data_2(href=article_url[i], title=title_0, title_2=article_title_dict["title"],
-                                         periods=periods,
+                self.deal_article_data_2(href=article_url[i], title=title_0,periods=periods,
                                          title_id=article_title_dict["title_id"], result=result)
                 print(result, periods, title_0)
 
@@ -230,7 +229,7 @@ class GetArticleData(object):
             print("===>", data_list)
             self.save_to_db(**data_list)
 
-    def deal_article_data_2(self, href, title, periods, title_id, title_2, result):
+    def deal_article_data_2(self, href, title, periods, title_id, result):
         # 一篇文章存一次标题
         data_list = {}
         data_list["source_url"] = href
