@@ -192,9 +192,10 @@ class GetArticleData(object):
             # 初步筛选数据
             data = self.deal_data(html=response, xpath_pattern=xpath_pattern)
             title_0 = self.deal_data(html=response, xpath_pattern="//div/h2/font/text()")[0]
+            title_00 = "【" + title_0 + "】"
 
             article_title_dict = {}
-            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + " " + "【" + title_0 + "】"
+            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + "【" + title_0 + "】"
             article_title_dict["title_id"] = str(periods) + str(num)
 
             # 保存标题到数据库
@@ -205,7 +206,7 @@ class GetArticleData(object):
                 result = self.func_select(d=d, i=i)
 
                 # 保存结果到数据库
-                self.deal_article_data_2(href=article_url[i], title=title_0,
+                self.deal_article_data_2(href=article_url[i], title=title_00,
                                          periods=periods,
                                          title_id=article_title_dict["title_id"], result=result)
                 print(result, periods, title_0)
@@ -227,34 +228,53 @@ class GetArticleData(object):
 
             # 筛选出结果
             result_1 = data.xpath("text()")[0].strip()  # 结果中的：期数
+            print(result_1, type(result_1), "========>1")
             try:
-                result_2 = data.xpath("font[2]/text()")[0].strip()  # 结果中的：标题
+                result_2 = data.xpath("font[2]/text()")[0].replace('\r', '').replace('\n', '').replace('\t',
+                                                                                                       '')  # 结果中的：标题
+                print(result_2, type(result_2), "========>2")
+
             except:
                 result_2 = ''
             try:
                 result_3 = data.xpath("text()")[1].strip()  # 结果中的：开
+                print(result_3, type(result_3), "========>3")
             except:
                 result_3 = ''
             try:
-                result_4 = data.xpath("font[2]/text()")[0].strip()  # 结果中的：开奖结果
+                result_4 = data.xpath("font[2]/text()")[0].replace('\n', '').replace('\t', '')  # 结果中的：开奖结果
+                print(result_4, type(result_4), "========>4")
             except:
                 result_4 = ''
             try:
                 result_5 = data.xpath("text()")[2].strip()  # 结果中的：开奖结果
+                print(result_5, type(result_5), "========>5")
             except:
                 result_5 = ''
-            result = result_1 + result_2 + result_3 + result_4 + result_5
-            print(result, "=======> result")
-            data_list["result"] = result
 
+            try:
+                result_6 = data.xpath("font[3]/text()")[0].strip()  # 结果中的：开奖结果
+                print(result_6, type(result_6), "========>6")
+            except:
+                result_6 = ''
 
+            try:
+                result_7 = data.xpath("span/text()")[0].strip()  # 结果中的：开奖结果
+                print(result_7, type(result_7), "========>6")
+            except:
+                result_7 = ''
+
+            result = result_1 + result_2 + result_3 + result_4 + result_6 + result_5
+            if href == "http://www.908282.com/bbs/4405.html":
+                result = result_1 + result_3 + result_4 + result_5 + result_6 + "√"
+            if href == "http://www.908282.com/bbs/4407.html":
+                result = result_1 + result_2 + result_3 + result_7 + result_5 + result_6 + "√"
+            data_list["result"] = result.strip()
             data_list["title_id"] = title_id
             data_list["title_2"] = title_2
-            print("===>data", data_list)
             self.save_to_db(**data_list)
 
     def deal_article_data_2(self, href, title, periods, title_id, result):
-        # 一篇文章存一次标题
         data_list = {}
         data_list["source_url"] = href
         data_list["periods"] = periods
@@ -265,7 +285,7 @@ class GetArticleData(object):
         self.save_to_db(**data_list)
 
     def run(self):
-        # self.run_article_1()
+        self.run_article_1()
         self.run_article_new()
 
 

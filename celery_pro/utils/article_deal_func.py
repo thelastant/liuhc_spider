@@ -27,9 +27,20 @@ def func_1(d):
         result_4 = ''
     try:
         result_5 = d.xpath("font[3]/text()")[0]
+        print(result_5, "===>r5")
     except:
         result_5 = ''
-    result = result_1 + result_2 + result_4 + result_3 + result_5
+
+    try:
+        result_6 = d.xpath("font[4]/text()")[0]
+    except:
+        result_6 = ''
+    try:
+        result_7 = d.xpath("font[5]/text()")[0]
+    except:
+        result_7 = ''
+
+    result = result_1 + result_2 + result_4 + result_3 + result_5 + result_6 + result_7
     return result
 
 
