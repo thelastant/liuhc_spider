@@ -18,7 +18,7 @@ class GetArticleData(object):
         # 有规律的帖子
         self.index_url_10 = "http://www.908282.com/bbs/999.html"  # 这个精华帖子主页url
         self.xpath_pattern_5 = "//td/a"  # 精华帖子a标签筛选规则
-        self.xpath_pattern_6 = "//tr/td/font/text()"  # 帖子内容筛选规则
+        self.xpath_pattern_6 = "//tr/td/font"  # 帖子内容筛选规则
 
         # 没有规律的帖子
         self.index_url = "http://www.908282.com/bbs/888.html"  # 第一网站基础url
@@ -194,7 +194,7 @@ class GetArticleData(object):
             title_0 = self.deal_data(html=response, xpath_pattern="//div/h2/font/text()")[0]
 
             article_title_dict = {}
-            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + " " + title_0
+            article_title_dict["title"] = "第" + str(periods) + "期" + ":" + "精华帖" + " " + "【" + title_0 + "】"
             article_title_dict["title_id"] = str(periods) + str(num)
 
             # 保存标题到数据库
@@ -224,10 +224,33 @@ class GetArticleData(object):
             data_list["source_url"] = href
             data_list["title"] = title
             data_list["periods"] = periods
-            data_list["result"] = data.strip()
+
+            # 筛选出结果
+            result_1 = data.xpath("text()")[0].strip()  # 结果中的：期数
+            try:
+                result_2 = data.xpath("font[2]/text()")[0].strip()  # 结果中的：标题
+            except:
+                result_2 = ''
+            try:
+                result_3 = data.xpath("text()")[1].strip()  # 结果中的：开
+            except:
+                result_3 = ''
+            try:
+                result_4 = data.xpath("font[2]/text()")[0].strip()  # 结果中的：开奖结果
+            except:
+                result_4 = ''
+            try:
+                result_5 = data.xpath("text()")[2].strip()  # 结果中的：开奖结果
+            except:
+                result_5 = ''
+            result = result_1 + result_2 + result_3 + result_4 + result_5
+            print(result, "=======> result")
+            data_list["result"] = result
+
+
             data_list["title_id"] = title_id
             data_list["title_2"] = title_2
-            print("===>", data_list)
+            print("===>data", data_list)
             self.save_to_db(**data_list)
 
     def deal_article_data_2(self, href, title, periods, title_id, result):
@@ -242,7 +265,7 @@ class GetArticleData(object):
         self.save_to_db(**data_list)
 
     def run(self):
-        self.run_article_1()
+        # self.run_article_1()
         self.run_article_new()
 
 
