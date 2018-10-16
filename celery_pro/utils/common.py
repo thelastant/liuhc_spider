@@ -170,11 +170,11 @@ article_url = {
     3: "http://www.908282.com/bbs/1203.html",
     4: "http://www.908282.com/bbs/1204.html",
     5: "http://www.908282.com/bbs/1205.html",
-    6: "http://www.908282.com/bbs/1206.html",
-    7: "http://www.908282.com/bbs/1207.html",
-    8: "http://www.908282.com/bbs/1208.html",
-    9: "http://www.908282.com/bbs/1209.html",
-    10: "http://www.908282.com/bbs/1210.html",
-    11: "http://www.908282.com/bbs/1211.html",
+    6: "http://www.908282.com/bbs/1208.html",
+    7: "http://www.908282.com/bbs/1209.html",
+    8: "http://www.908282.com/bbs/1210.html",
+    9: "http://www.908282.com/bbs/1211.html",
+    10: "http://www.908282.com/bbs/1212.html",
+    11: "http://www.908282.com/bbs/1213.html",
 
 }

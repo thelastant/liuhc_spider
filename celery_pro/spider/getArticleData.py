@@ -163,6 +163,20 @@ class GetArticleData(object):
     def func_select(self, d, i=1):
         if i == 1:
             result = article_deal_func.func_1(d)
+        elif i == 2:
+            result = article_deal_func.fun_2(d)
+        elif i == 3:
+            result = article_deal_func.fun_3(d)
+        elif i == 4:
+            result = article_deal_func.fun_4(d)
+        elif i == 5:
+            result = article_deal_func.fun_5(d)
+        elif i == 6:
+            result = article_deal_func.fun_6(d)
+        elif i == 7:
+            result = article_deal_func.fun_7(d)
+        elif i == 8:
+            result = article_deal_func.fun_8(d)
         else:
             result = ''
         return result
@@ -182,7 +196,7 @@ class GetArticleData(object):
         for i in range(1, 13):
             num += 1
             print(i)
-            if i not in [1]:
+            if i not in [1, 2, 3, 4, 5, 6, 7, 8]:
                 break
             response = self.get_response(url=article_url[i])
 
@@ -285,7 +299,7 @@ class GetArticleData(object):
         self.save_to_db(**data_list)
 
     def run(self):
-        self.run_article_1()
+        # self.run_article_1()
         self.run_article_new()
 
 
