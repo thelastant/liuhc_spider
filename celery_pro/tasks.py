@@ -20,3 +20,9 @@ def liu_task():
     # # 测试！！！！！！！！！！
     obj = GetPictureData()
     obj.run()
+
+@app.task
+def new_liu_task():
+    # # 测试！！！！！！！！！！
+    obj = GetPictureData()
+    obj.run()

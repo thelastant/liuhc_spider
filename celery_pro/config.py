@@ -24,4 +24,9 @@ CELERYBEAT_SCHEDULE = {
         'task': 'celery_pro.tasks.liu_task',
         'schedule': crontab(hour="*/1"),
     },
+
+    'new_liu_task': {
+        'task': 'celery_pro.tasks.new_liu_task',
+        'schedule': crontab(hour="*/1"),
+    },
 }

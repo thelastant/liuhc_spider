@@ -26,7 +26,7 @@ class config:
     SPIDER_HOST = "45.249.247.90"
     SPIDER_USER = "lsh"
     SPIDER_PASSWORD = "a123456"
-    SPIDER_DB = "bbs"
+    SPIDER_DB = "test"
     SPIDER_PORT = 4040
 
     # 爬取图片所用到的数据库
